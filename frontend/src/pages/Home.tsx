@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Title, Stack, Button, Box, Flex } from "@mantine/core";
+import { Container, Title, Button, Box, Flex } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 
