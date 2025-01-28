@@ -1,8 +1,10 @@
 mod auth;
 mod auth_middleware;
+mod routes;
 
 use crate::auth::create_jwt;
 use crate::auth_middleware::AuthUser;
+use crate::routes::auth::auth_routes;
 use axum::{
     extract::{
         ws::{Message, WebSocket, WebSocketUpgrade},
@@ -56,11 +58,12 @@ pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
     let cors = CorsLayer::new().allow_origin(Any).allow_methods(Any);
 
     let app = Router::new()
+        .merge(auth_routes())
         .route("/ws", get(ws_handler))
         .route("/", get(handler))
         .route("/login", post(login))
         .route("/protected", get(protected))
-        .with_state(pool) // データベース接続プールを状態として追加
+        .with_state(pool.into()) // データベース接続プールを状態として追加
         .layer(cors); // CORS設定をレイヤーとして追加
 
     let listener = TcpListener::bind("127.0.0.1:3000").await.unwrap();
@@ -76,7 +79,7 @@ pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 #[tokio::main]
-async fn main() {
+pub async fn main() {
     start_server().await.unwrap();
 }
 

@@ -13,12 +13,13 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 dotenvy = "0.15"
 uuid = { version = "1", features = ["v4", "serde"] }
-sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio-native-tls", "uuid"] }
+sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio-native-tls", "uuid","time","chrono"] }
 jsonwebtoken = "9"
 thiserror = "2.0.11"
-chrono = { version = "0.4", features = ["serde"] }
+chrono = { version = "0.4.39", features = ["serde"] }
 async-trait = "0.1.85"
 reqwest = { version = "0.12.12", features = ["json"] }
+bcrypt = "0.16.0"
 
 [lib]
 name = "backend"
