@@ -1,6 +1,7 @@
 mod auth;
 mod auth_middleware;
 mod routes;
+mod services;
 
 use crate::auth::create_jwt;
 use crate::auth_middleware::AuthUser;
@@ -61,7 +62,6 @@ pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
         .merge(auth_routes())
         .route("/ws", get(ws_handler))
         .route("/", get(handler))
-        .route("/login", post(login))
         .route("/protected", get(protected))
         .with_state(pool.into()) // データベース接続プールを状態として追加
         .layer(cors); // CORS設定をレイヤーとして追加
@@ -81,12 +81,6 @@ pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
 #[tokio::main]
 pub async fn main() {
     start_server().await.unwrap();
-}
-
-// ログインAPI (ダミーユーザーでJWT発行)
-async fn login() -> String {
-    let user_id = "user123"; // ダミーユーザー
-    create_jwt(user_id) // JWT を発行して返す
 }
 
 // 認証必須のエンドポイント
