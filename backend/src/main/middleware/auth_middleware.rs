@@ -1,10 +1,21 @@
+use std::env;
+
 use crate::middleware::auth::{validate_jwt, AuthError};
 use axum::{
+    body::Body,
     extract::FromRequestParts,
-    http::{request::Parts, StatusCode},
+    http::{request::Parts, Request, StatusCode},
+    middleware::Next,
     response::{IntoResponse, Response},
 };
+use axum_extra::{
+    headers::{authorization::Bearer, Authorization},
+    TypedHeader,
+};
+use jsonwebtoken::{decode, DecodingKey, Validation};
 use tracing::error;
+
+use super::auth::Claims;
 
 #[derive(Clone, Debug)]
 pub struct AuthUser(pub String); // ユーザーIDを格納
@@ -46,5 +57,24 @@ where
                     .into_response())
             }
         }
+    }
+}
+
+pub async fn auth_middleware(
+    TypedHeader(auth): TypedHeader<Authorization<Bearer>>,
+    request: Request<Body>,
+    next: Next,
+) -> Result<Response, StatusCode> {
+    let secret = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
+
+    let token_data = decode::<Claims>(
+        auth.token(),
+        &DecodingKey::from_secret(secret.as_ref()),
+        &Validation::default(),
+    );
+
+    match token_data {
+        Ok(_) => Ok(next.run(request).await),
+        Err(_) => Err(StatusCode::UNAUTHORIZED),
     }
 }
