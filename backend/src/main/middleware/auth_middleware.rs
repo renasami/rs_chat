@@ -1,4 +1,4 @@
-use crate::auth::{validate_jwt, AuthError};
+use crate::middleware::auth::{validate_jwt, AuthError};
 use axum::{
     extract::FromRequestParts,
     http::{request::Parts, StatusCode},

@@ -8,7 +8,7 @@ use chrono::{Duration, Utc};
 use jsonwebtoken::{encode, EncodingKey, Header};
 use uuid::Uuid;
 
-use crate::auth::Claims;
+use crate::middleware::auth::Claims;
 
 pub fn create_jwt(user_id: String, expires_in_minutes: i64) -> String {
     let exp = Utc::now()

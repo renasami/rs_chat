@@ -1,11 +1,3 @@
-mod auth;
-mod auth_middleware;
-mod routes;
-mod services;
-
-use crate::auth::create_jwt;
-use crate::auth_middleware::AuthUser;
-use crate::routes::auth::auth_routes;
 use axum::{
     extract::{
         ws::{Message, WebSocket, WebSocketUpgrade},
@@ -21,6 +13,8 @@ use std::{env, net::SocketAddr};
 use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+use crate::routes::{auth::auth_routes, user::user_routes};
 
 async fn ws_handler(
     ws: WebSocketUpgrade,
@@ -60,9 +54,9 @@ pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
 
     let app = Router::new()
         .merge(auth_routes())
+        .merge(user_routes())
         .route("/ws", get(ws_handler))
         .route("/", get(handler))
-        .route("/protected", get(protected))
         .with_state(pool.into()) // データベース接続プールを状態として追加
         .layer(cors); // CORS設定をレイヤーとして追加
 
@@ -81,11 +75,6 @@ pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
 #[tokio::main]
 pub async fn main() {
     start_server().await.unwrap();
-}
-
-// 認証必須のエンドポイント
-async fn protected(AuthUser(user_id): AuthUser) -> String {
-    format!("Protected data for user: {}", user_id)
 }
 
 async fn handler() -> &'static str {
