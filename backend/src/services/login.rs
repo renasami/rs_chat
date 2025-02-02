@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{fmt, sync::Arc};
 
 use axum::{
     extract::State,
@@ -32,6 +32,7 @@ pub async fn login_user(
 
     if let Some(user) = user {
         let is_valid = verify(&payload.password, &user.password_hash).unwrap_or(false);
+
         if is_valid {
             let user_id = user.user_id;
 

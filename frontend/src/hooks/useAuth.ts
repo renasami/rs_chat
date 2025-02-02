@@ -38,7 +38,7 @@ export const useAuth = () => {
   // ユーザー情報取得
   const userQuery = useQuery<User | null>("user", api.getUser, {
     retry: false,
-    onError: () => setAuthToken(null),
+    onError: () =>  setAuthToken(null),
   });
 
   return {

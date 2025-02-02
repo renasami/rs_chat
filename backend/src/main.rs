@@ -3,17 +3,22 @@ use axum::{
         ws::{Message, WebSocket, WebSocketUpgrade},
         ConnectInfo,
     },
+    http::HeaderValue,
     response::IntoResponse,
     routing::{get, post},
     Router,
 };
 use backend::routes;
 use dotenvy::dotenv;
+use reqwest::{
+    header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE},
+    Method,
+};
 use routes::{auth::auth_routes, user::user_routes};
 use sqlx::PgPool;
 use std::{env, net::SocketAddr};
 use tokio::net::TcpListener;
-use tower_http::cors::{Any, CorsLayer};
+use tower_http::cors::{AllowOrigin, Any, CorsLayer};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 async fn ws_handler(
@@ -50,13 +55,18 @@ pub async fn start_server() -> Result<(), Box<dyn std::error::Error>> {
         .expect("Failed to connect to the database");
 
     // CORS設定の作成
-    let cors = CorsLayer::new().allow_origin(Any).allow_methods(Any);
+    let cors = CorsLayer::new()
+        .allow_origin("http://localhost:5173".parse::<HeaderValue>().unwrap())
+        // 必要に応じて、HTTPメソッドやヘッダーを許可する
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::PATCH])
+        .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE])
+        // クレデンシャル付きリクエストを許可する
+        .allow_credentials(true);
 
     let app = Router::new()
-        .merge(auth_routes())
         .merge(user_routes())
+        .merge(auth_routes())
         .route("/ws", get(ws_handler))
-        .route("/", get(handler))
         .with_state(pool.into()) // データベース接続プールを状態として追加
         .layer(cors); // CORS設定をレイヤーとして追加
 

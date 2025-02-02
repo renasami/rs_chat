@@ -1,4 +1,4 @@
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AppShell, Group, Button, Box } from "@mantine/core";
 import {
   IconHome,
@@ -8,13 +8,17 @@ import {
   IconLayoutList,
 } from "@tabler/icons-react";
 import { Outlet } from "react-router-dom";
-import { JSX, useContext, useEffect } from "react";
+import { useContext } from "react";
 import { AuthContext } from "./AuthProvider";
+import { useAuth } from "../hooks/useAuth";
 
 export const BasicLayout = () => {
-  const handleLogout = () => {
-    console.log("Logging out...");
-    // ここにログアウト処理を追加
+  const { logoutMutation } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    await logoutMutation.mutateAsync();
+    localStorage.removeItem("token");
+    navigate("/");
   };
   const data = useContext(AuthContext);
 

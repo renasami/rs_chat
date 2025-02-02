@@ -1,14 +1,20 @@
 import { useState } from "react";
 import { TextInput, Button, Stack, Text } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Register: React.FC = () => {
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
-  const handleRegister = () => {
-    console.log("Registering with:", { username, email, password });
+  const { registerMutation } = useAuth();
+  const navigate = useNavigate();
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const response = await registerMutation.mutateAsync({ username, password });
+    console.log(response);
+    navigate("/");
   };
 
   return (
@@ -17,11 +23,6 @@ const Register: React.FC = () => {
         label="ユーザー名"
         value={username}
         onChange={(e) => setUsername(e.currentTarget.value)}
-      />
-      <TextInput
-        label="メールアドレス"
-        value={email}
-        onChange={(e) => setEmail(e.currentTarget.value)}
       />
       <TextInput
         label="パスワード"

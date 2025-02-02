@@ -14,11 +14,12 @@ const fetchAPI = async (url: string, options: RequestInit = {}) => {
   const token = localStorage.getItem("token");
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(token ? { Authorization: `Bearer ${token}` } : { Authorization: `` }),
   };
 
   const response = await fetch(`${API_BASE_URL}${url}`, {
     ...options,
+    credentials: "include",
     headers,
   });
 

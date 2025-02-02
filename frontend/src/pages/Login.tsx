@@ -11,7 +11,8 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await loginMutation.mutateAsync({ username, password });
+    const response = await loginMutation.mutateAsync({ username, password });
+    console.log(response);
     navigate("/");
   };
 
