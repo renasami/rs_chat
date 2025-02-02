@@ -7,6 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Notifications } from "@mantine/notifications";
 import App from "./App";
 import "@mantine/notifications/styles.css";
+import { AuthProvider } from "./layout/AuthProvider";
 
 const queryClient = new QueryClient();
 
@@ -16,7 +17,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <Notifications />
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <App />
+          <AuthProvider>
+            <App />
+          </AuthProvider>
         </BrowserRouter>
       </QueryClientProvider>
     </MantineProvider>

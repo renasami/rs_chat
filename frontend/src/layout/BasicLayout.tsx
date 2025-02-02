@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { AppShell, Group, Button, Box } from "@mantine/core";
 import {
   IconHome,
@@ -8,12 +8,19 @@ import {
   IconLayoutList,
 } from "@tabler/icons-react";
 import { Outlet } from "react-router-dom";
+import { JSX, useContext, useEffect } from "react";
+import { AuthContext } from "./AuthProvider";
 
 export const BasicLayout = () => {
   const handleLogout = () => {
     console.log("Logging out...");
     // ここにログアウト処理を追加
   };
+  const data = useContext(AuthContext);
+
+  if (data === null) return <Navigate to="/login" />;
+  if (data.isLoading) return <p>Loading...</p>;
+  if (data.user === null) return <Navigate to="/login" />;
 
   return (
     <AppShell

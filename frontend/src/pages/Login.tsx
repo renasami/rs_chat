@@ -1,21 +1,26 @@
 import { useState } from "react";
 import { TextInput, Button, Stack, Text } from "@mantine/core";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const { loginMutation } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log("Logging in with:", { email, password });
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await loginMutation.mutateAsync({ username, password });
+    navigate("/");
   };
 
   return (
     <Stack>
       <TextInput
-        label="メールアドレス"
-        value={email}
-        onChange={(e) => setEmail(e.currentTarget.value)}
+        label="ユーザー名"
+        value={username}
+        onChange={(e) => setUserName(e.currentTarget.value)}
       />
       <TextInput
         label="パスワード"
