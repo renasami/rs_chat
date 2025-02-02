@@ -24,5 +24,8 @@ bcrypt = "0.16.0"
 
 [lib]
 name = "backend"
-path = "src/main/lib.rs"
+path = "src/lib.rs"
 
+[[bin]]
+name = "backend"
+path = "src/main.rs"

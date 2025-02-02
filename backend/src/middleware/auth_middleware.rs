@@ -14,11 +14,12 @@ use axum_extra::{
 };
 use jsonwebtoken::{decode, DecodingKey, Validation};
 use tracing::error;
+use uuid::Uuid;
 
 use super::auth::Claims;
 
 #[derive(Clone, Debug)]
-pub struct AuthUser(pub String); // ユーザーIDを格納
+pub struct AuthUser(pub Uuid); // ユーザーIDを格納
 
 impl<S> FromRequestParts<S> for AuthUser
 where
@@ -47,7 +48,10 @@ where
 
         // JWT 検証
         match validate_jwt(token) {
-            Ok(user_id) => Ok(AuthUser(user_id)),
+            Ok(user_id) => match Uuid::parse_str(&user_id) {
+                Ok(user_id) => Ok(AuthUser(user_id)),
+                Err(e) => panic!("{}", e),
+            },
             Err(AuthError::InvalidToken { field1 }) => {
                 error!("Invalid JWT token {}", field1);
                 Err((

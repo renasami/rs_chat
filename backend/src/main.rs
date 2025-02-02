@@ -7,14 +7,14 @@ use axum::{
     routing::{get, post},
     Router,
 };
+use backend::routes;
 use dotenvy::dotenv;
+use routes::{auth::auth_routes, user::user_routes};
 use sqlx::PgPool;
 use std::{env, net::SocketAddr};
 use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-
-use crate::routes::{auth::auth_routes, user::user_routes};
 
 async fn ws_handler(
     ws: WebSocketUpgrade,

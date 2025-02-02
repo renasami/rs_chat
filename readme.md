@@ -18,6 +18,6 @@ cd frontend
 bun run dev
 ```
 ```
-cd backend
+cd backend/main
 cargo run
 ```
