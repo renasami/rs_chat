@@ -51,4 +51,10 @@ export const api = {
     }),
 
   getUser: () => fetchAPI("/me"),
+
+  createChat: (body: { room_name: string; created_by: string }) =>
+    fetchAPI("/create_room", {
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
 };

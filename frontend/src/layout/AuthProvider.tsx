@@ -1,13 +1,13 @@
-import React, { createContext } from "react";
+import React, { createContext, useEffect } from "react";
 import { useAuth, User } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 // ユーザーの型
-interface AuthContextType {
+export type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   logout: () => void;
-}
+};
 
 // Context を作成
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -16,6 +16,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const { user, isLoading, logoutMutation } = useAuth();
+
   const navigate = useNavigate();
 
   const logout = async () => {

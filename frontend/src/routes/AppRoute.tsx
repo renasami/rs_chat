@@ -10,8 +10,7 @@ const AppRoutes: React.FC = () => {
     <Routes>
       {AuthRoutes()}
       <Route path="/">
-        <>{MainRoutes()}</>
-
+        {MainRoutes()}
         {ErrorRoutes()}
       </Route>
     </Routes>
