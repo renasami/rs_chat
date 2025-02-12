@@ -4,7 +4,7 @@ use crate::services::{self};
 use axum::{routing::post, Router};
 use sqlx::PgPool;
 
-use services::{login::login_user, logout::logout, register::register_user};
+use services::auth::{login::login_user, logout::logout, register::register_user};
 
 // ルーターを設定
 pub fn auth_routes() -> Router<Arc<PgPool>> {
