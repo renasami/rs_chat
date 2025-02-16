@@ -57,4 +57,10 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     }),
+
+  getRooms: () => {
+    fetchAPI("/get_rooms", {
+      method: "GET",
+    });
+  },
 };

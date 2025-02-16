@@ -9,6 +9,7 @@ import {
   Title,
 } from "@mantine/core";
 import { Link } from "react-router-dom";
+import { useChat } from "../hooks/useChat";
 
 // サンプルデータ（実際はAPIなどから取得）
 const chatRooms = [
@@ -33,6 +34,7 @@ const chatRooms = [
 ];
 
 const ChatList: React.FC = () => {
+  const a = useChat();
   return (
     <Container size="md" p="md">
       <Stack>
